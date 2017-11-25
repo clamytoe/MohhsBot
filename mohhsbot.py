@@ -6,6 +6,7 @@ Created on Wed Nov 22 08:29:08 2017
 """
 import time
 import requests
+from functools import lru_cache
 from random import choice
 from bs4 import BeautifulSoup
 from slackclient import SlackClient
@@ -39,21 +40,26 @@ def soup_magic(url):
     BeautifulSoup scraping code.
 
     :param url: String - the URL of the page to scrape
-    :return: bs4.element.Tag - the bs4 image tag object
+    :return: None or bs4.element.Tag - the bs4 image tag object
     """
     # search for the topic and pick a random thumbnail
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html5lib')
     thumb_tags = soup.find_all('a', {'class': 'preview'})
     images = [html_tag['href'] for html_tag in thumb_tags]
-    image_url = choice(images)
 
-    # scrape the actual image
-    image_page = requests.get(image_url)
-    image_soup = BeautifulSoup(image_page.content, 'html5lib')
-    image = image_soup.find('img', {'id': 'wallpaper'})
+    # handle a no match situation
+    try:
+        image_url = choice(images)
 
-    return image
+        # scrape the actual image
+        image_page = requests.get(image_url)
+        image_soup = BeautifulSoup(image_page.content, 'html5lib')
+        image = image_soup.find('img', {'id': 'wallpaper'})
+
+        return image
+    except IndexError:
+        return None
 
 
 def search_for_topic(topic, channel, username):
@@ -84,6 +90,7 @@ def search_for_topic(topic, channel, username):
             post_message(response, channel)
 
 
+@lru_cache(maxsize=128)
 def lookup_user(user_id):
     """
     Looks up the username of the given user id.
