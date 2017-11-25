@@ -30,6 +30,7 @@ CHANNEL_ID = '...'
 SLACK_BOT_TOKEN = '...'
 ```
 I'll leave it up to you to figure out how to use environment variables if you want to go that route.
+>**NOTE:** Only the *BOT_ID*, *SLACK_BOT_TOKEN* are needed for the script to work. The others are used during testing...
 
 ## Testing
 I started this project with some test driven development (TDD), but I quickly reached the limits of my [PyTest](https://docs.pytest.org/en/latest/) knowledge when it came time to testing the Slack code. Currently it only tests the local code and establishing the connection.
@@ -37,14 +38,26 @@ I started this project with some test driven development (TDD), but I quickly re
 To run the provided tests, simple run the following command:
 
 ```bash
-pytest
+(mohhsbot): pytest
+============================= test session starts =============================
+platform win32 -- Python 3.6.3, pytest-3.2.5, py-1.5.2, pluggy-0.4.0 -- C:\Users\clamytoe\virtualenvs\mohhsbot\Scripts\python.exe
+cachedir: .cache
+rootdir: C:\Users\clamytoe\Documents\Projects\MohhsBot, inifile:
+collecting ... collected 3 items
+test_mohhsbot.py::test_environment_variables PASSED
+test_mohhsbot.py::test_slack_connection PASSED
+test_mohhsbot.py::test_bot_id PASSED
+
+========================== 3 passed in 0.55 seconds ===========================
+Process finished with exit code 0
 ```
 
 ## Getting your bot's ID
 I've provided a little script that should help you get the ID of your bot. If you are not getting the ID, uncomment the *print()* statement to help you find it.
 
 ```bash
-python get_bot_id.py
+(mohhsbot): python get_bot_id.py
+Bot ID for "mohh" is U854JKLNS
 ```
 
 ## Running the bot
